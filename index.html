@@ -353,38 +353,6 @@
             .items-table td:nth-child(5)::before { content: "Aksi"; font-weight: 600; color: #374151; }
             .btn-danger { width: auto; }
 		}
-		/* ==== Print/PDF overrides: paksa header tetap horizontal ==== */
-    @media print {
-      .preview-header {
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: flex-start !important;
-      }
-    
-      /* Pastikan grid tidak collapse ke 1 kolom saat print */
-      .content {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 24px !important;
-        padding: 24px !important;
-      }
-    
-      /* Kembalikan tabel ke mode table saat print (bukan kartu) */
-      .items-table { 
-        display: table !important; 
-        width: 100% !important; 
-      }
-      .items-table thead { display: table-header-group !important; }
-      .items-table tbody { display: table-row-group !important; }
-      .items-table tr { display: table-row !important; }
-      .items-table td, .items-table th { 
-        display: table-cell !important; 
-        border-bottom: 1px solid #e5e7eb !important;
-        padding: 8px 10px !important;
-      }
-    
-      /* Hindari header pecah halaman & rapikan preview */
-      .invoice-preview { page-break-inside: avoid; }
-    }
     </style>  
 </head>
 <body>
@@ -830,6 +798,7 @@
     </script>
 </body>
 </html>
+
 
 
 
