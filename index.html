@@ -408,10 +408,10 @@
                         <span>Subtotal:</span>
                         <span id="subtotal">Rp 0</span>
                     </div>
-                    <div class="summary-item">
-                        <span>PPN (10%):</span>
-                        <span id="tax">Rp 0</span>
-                    </div>
+                    //<div class="summary-item">
+                        //<span>PPN (10%):</span>
+                        // <span id="tax">Rp 0</span>
+                    //</div>
                     <div class="summary-item total">
                         <span>TOTAL:</span>
                         <span id="total">Rp 0</span>
@@ -551,8 +551,8 @@
         // Update summary
         function updateSummary() {
             const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-            const tax = subtotal * 0.1; // PPN 10%
-            const total = subtotal + tax;
+            //const tax = subtotal * 0.1; // PPN 10%
+            const total = subtotal;
             
             document.getElementById('subtotal').textContent = formatCurrency(subtotal);
             document.getElementById('tax').textContent = formatCurrency(tax);
@@ -751,4 +751,5 @@
     </script>
 </body>
 </html>
+
 
