@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <style>
+        /* Styling dasar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 968px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: #1e40af;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2rem;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .items-table th {
+            background: #1e40af;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .items-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .items-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #3b82f6;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #d1d5db;
+        }
+        
+        .total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+        
+        .invoice-preview {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        .preview-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #10b981;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .currency-input {
+            position: relative;
+        }
+        
+        .currency-input::before {
+            content: 'Rp';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        .currency-input input {
+            padding-left: 40px;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+	
+	@media print {
+      	    .no-print {
+            display: none !important;
+      	    }
+    	}
+    </style>
+  
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖨️ Invoice Generator</h1>
+            <p>Buat invoice profesional dengan mudah - Mata Uang IDR</p>
+        </div>
+        
+        <div class="content">
+            <!-- Form Data Perusahaan -->
+            <div class="form-section">
+                <h2 class="section-title">🏢 Data Perusahaan</h2>
+                
+                <div class="logo-container">
+                    <img src="logo.jpg" alt="Company Logo" id="companyLogo" style="max-width:120px; height:auto;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyName">Nama Perusahaan</label>
+                    <input type="text" id="companyName" placeholder="PT. Contoh Indonesia">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyAddress">Alamat</label>
+                    <textarea id="companyAddress" rows="2" placeholder="Jl. Contoh No. 123, Jakarta"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyPhone">Telepon</label>
+                    <input type="text" id="companyPhone" placeholder="+62 21-1234-5678">
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyEmail">Email</label>
+                    <input type="email" id="companyEmail" placeholder="info@perusahaan.com">
+                </div>
+            </div>
+            
+            <!-- Form Data Klien & Items -->
+            <div class="form-section">
+                <h2 class="section-title">👥 Data Klien</h2>
+                
+                <div class="form-group">
+                    <label for="clientName">Nama Klien</label>
+                    <input type="text" id="clientName" placeholder="Nama lengkap klien">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientAddress">Alamat Klien</label>
+                    <textarea id="clientAddress" rows="2" placeholder="Alamat lengkap klien"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientPhone">Telepon Klien</label>
+                    <input type="text" id="clientPhone" placeholder="+62 XXX-XXXX-XXXX">
+                </div>
+                
+                <div class="form-group">
+                    <label for="clientEmail">Email Klien</label>
+                    <input type="email" id="clientEmail" placeholder="email@klien.com">
+                </div>
+                
+                <h2 class="section-title" style="margin-top: 30px;">📦 Item Barang/Jasa</h2>
+                
+                <div class="form-group">
+                    <label for="itemDescription">Deskripsi Item</label>
+                    <input type="text" id="itemDescription" placeholder="Nama barang/jasa">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="itemQuantity">Jumlah</label>
+                        <input type="number" id="itemQuantity" placeholder="0" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemPrice">Harga Satuan</label>
+                        <div class="currency-input">
+                            <input type="number" id="itemPrice" placeholder="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" onclick="addItem()">
+                    ➕ Tambah Item
+                </button>
+                
+                <!-- Tabel Items -->
+                <table class="items-table" id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Harga</th>
+                            <th>Total</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Items akan ditambahkan di sini -->
+                    </tbody>
+                </table>
+                
+                <!-- Summary -->
+                <div class="summary">
+                    <div class="summary-item">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">Rp 0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>PPN (10%):</span>
+                        <span id="tax">Rp 0</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>TOTAL:</span>
+                        <span id="total">Rp 0</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Catatan Invoice</label>
+                    <textarea id="notes" rows="3" placeholder="Tambahkan catatan atau informasi pembayaran..."></textarea>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="resetForm()">
+                        🔄 Reset All
+                    </button>
+                    <button class="btn-primary" onclick="generateInvoice()">
+                        🖨️ Generate Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Invoice Preview -->
+        <div class="invoice-preview" id="invoicePreview">
+            <h2 class="section-title">📄 Preview Invoice</h2>
+            <div id="previewContent">
+                <p style="text-align: center; color: #6b7280; padding: 40px;">
+                    Klik "Generate Invoice" untuk melihat preview di sini
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        ✅ Operation completed successfully!
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <script>
+        // Variabel untuk menyimpan data
+        let items = [];
+        
+        // Format angka ke format mata uang Indonesia
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        // Show notification
+        function showNotification(message, isSuccess = true) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = isSuccess ? '#10b981' : '#ef4444';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Fungsi untuk menambahkan item
+        function addItem() {
+            const description = document.getElementById('itemDescription').value;
+            const quantity = parseInt(document.getElementById('itemQuantity').value);
+            const price = parseInt(document.getElementById('itemPrice').value);
+            
+            if (!description || isNaN(quantity) || isNaN(price) || quantity <= 0 || price <= 0) {
+                showNotification('❌ Harap isi semua field dengan benar!', false);
+                return;
+            }
+            
+            const total = quantity * price;
+            const item = { 
+                id: Date.now(), 
+                description, 
+                quantity, 
+                price, 
+                total 
+            };
+            
+            items.push(item);
+            renderItems();
+            
+            // Reset form
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('itemQuantity').value = '1';
+            document.getElementById('itemPrice').value = '';
+            
+            showNotification('✅ Item berhasil ditambahkan!');
+        }
+        
+        // Fungsi untuk menghapus item
+        function removeItem(id) {
+            items = items.filter(item => item.id !== id);
+            renderItems();
+            showNotification('🗑️ Item berhasil dihapus');
+        }
+        
+        // Render items ke tabel
+        function renderItems() {
+            const tbody = document.getElementById('itemsTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            if (items.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #6b7280; padding: 20px;">
+                            Belum ada item. Tambahkan item terlebih dahulu.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                items.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.description}</td>
+                        <td>${item.quantity}</td>
+                        <td>${formatCurrency(item.price)}</td>
+                        <td>${formatCurrency(item.total)}</td>
+                        <td>
+                            <button class="btn-danger" onclick="removeItem(${item.id})">
+                                🗑️ Hapus
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            updateSummary();
+        }
+        
+        // Update summary
+        function updateSummary() {
+            const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+            const tax = subtotal * 0.1; // PPN 10%
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('tax').textContent = formatCurrency(tax);
+            document.getElementById('total').textContent = formatCurrency(total);
+        }
+        
+        // Generate invoice preview
+        function generateInvoice() {
+            const companyName = document.getElementById('companyName').value;
+            const companyAddress = document.getElementById('companyAddress').value;
+            const companyPhone = document.getElementById('companyPhone').value;
+            const companyEmail = document.getElementById('companyEmail').value;
+            
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+            const clientPhone = document.getElementById('clientPhone').value;
+            const clientEmail = document.getElementById('clientEmail').value;
+            
+            const notes = document.getElementById('notes').value;
+            
+            // Validasi
+            if (!companyName || !companyAddress) {
+                showNotification('❌ Harap isi data perusahaan terlebih dahulu!', false);
+                return;
+            }
+            
+            if (!clientName || !clientAddress) {
+                showNotification('❌ Harap isi data klien terlebih dahulu!', false);
+                return;
+            }
+            
+            if (items.length === 0) {
+                showNotification('❌ Tambahkan minimal 1 item terlebih dahulu!', false);
+                return;
+            }
+            
+            const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            
+            const now = new Date();
+            const invoiceNumber = `INV-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = `
+                <div class="preview-header">
+                    <div class="logo-container">
+                    <img src="logo.jpg" alt="Company Logo" id="companyLogo" style="max-width:120px; height:auto;">
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <h2>INVOICE</h2>
+                        <p><strong>No:</strong> ${invoiceNumber}</p>
+                        <p><strong>Tanggal:</strong> ${now.toLocaleDateString('id-ID')}</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <h4>Dari:</h4>
+                        <p><strong>${companyName}</strong></p>
+                        <p>${companyAddress}</p>
+                        <p>Tel: ${companyPhone}</p>
+                        <p>Email: ${companyEmail}</p>
+                    </div>
+                    
+                    <div>
+                        <h4>Kepada:</h4>
+                        <p><strong>${clientName}</strong></p>
+                        <p>${clientAddress}</p>
+                        <p>Tel: ${clientPhone}</p>
+                        <p>Email: ${clientEmail}</p>
+                    </div>
+                </div>
+                
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Deskripsi</th>
+                            <th>Jumlah</th>
+                            <th>Harga Satuan</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map(item => `
+                            <tr>
+                                <td>${item.description}</td>
+                                <td>${item.quantity}</td>
+                                <td>${formatCurrency(item.price)}</td>
+                                <td>${formatCurrency(item.total)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div class="summary">
+                    <div class="summary-item">
+                        <span>Subtotal:</span>
+                        <span>${formatCurrency(subtotal)}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>PPN (10%):</span>
+                        <span>${formatCurrency(tax)}</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>TOTAL:</span>
+                        <span>${formatCurrency(total)}</span>
+                    </div>
+                </div>
+                
+                ${notes ? `
+                    <div style="margin-top: 20px;">
+                        <h4>Catatan:</h4>
+                        <p>${notes}</p>
+                    </div>
+                ` : ''}
+                
+                <div class="action-buttons; no-print">
+                    <button class="btn-primary" onclick="downloadInvoicePDF('${invoiceNumber}')">
+                        🖨️ Cetak Invoice
+                    </button>
+                </div>
+            `;
+            
+
+            showNotification('✅ Invoice berhasil dibuat!');
+        }
+        
+	// Function cetak PDF khusus invoice
+	function downloadInvoicePDF(invoiceNumber = "invoice") {
+    		const element = document.getElementById('previewContent');
+    		const buttons = element.querySelectorAll('.no-print');
+
+		// Sembunyikan tombol
+    		buttons.forEach(btn => btn.style.display = 'none');
+
+    		const opt = {
+        		margin:       [10, 20, 10, 20], // [atas, kanan, bawah, kiri] dalam mm
+        		filename:     `${invoiceNumber}.pdf`,
+        		image:        { type: 'jpeg', quality: 0.98 },
+        		html2canvas:  { scale: 2 }, // biar lebih tajem
+        		jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    			};
+    
+    	html2pdf().set(opt).from(element).save().then(() => {
+        	// Munculin lagi tombol setelah PDF selesai
+        	buttons.forEach(btn => btn.style.display = '');
+    		});
+	}
+
+	// Notifikasi sederhana
+	function showNotification(message, success = true) {
+    		alert(message);
+	}
+
+        // Reset form
+        function resetForm() {
+            if (!confirm('Apakah Anda yakin ingin mereset semua data?')) return;
+            
+            // Reset form fields
+            document.getElementById('companyName').value = '';
+            document.getElementById('companyAddress').value = '';
+            document.getElementById('companyPhone').value = '';
+            document.getElementById('companyEmail').value = '';
+            
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientAddress').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientEmail').value = '';
+            
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('itemQuantity').value = '1';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('notes').value = '';
+            
+            // Reset items
+            items = [];
+            renderItems();
+            
+            // Reset preview
+            document.getElementById('previewContent').innerHTML = `
+                <p style="text-align: center; color: #6b7280; padding: 40px;">
+                    Klik "Generate Invoice" untuk melihat preview di sini
+                </p>
+            `;
+            
+            showNotification('🔄 Semua data telah direset');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderItems();
+            showNotification('Selamat datang di Invoice Generator!');
+        });
+    </script>
+</body>
+</html>
