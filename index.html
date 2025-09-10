@@ -297,8 +297,63 @@
             display: none !important;
       	    }
     	}
-    </style>
-  
+	@media (max-width: 640px) {
+            body { padding: 12px; }
+            .container { border-radius: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 1.6rem; }
+            .header p { font-size: 0.95rem; }
+            .content { padding: 16px; gap: 16px; }
+            .form-section { padding: 16px; }
+            .section-title { font-size: 1.1rem; margin-bottom: 12px; padding-bottom: 8px; }
+            .logo { width: 84px; height: 84px; font-size: 1.6rem; }
+            .preview-logo { width: 64px; height: 64px; font-size: 1.2rem; }
+            input, textarea, select { font-size: 15px; padding: 12px; }
+            .currency-input::before { left: 10px; }
+            button { width: 100%; }
+            .action-buttons { gap: 10px; margin-top: 16px; }
+            .items-table { display: block; width: 100%; overflow-x: auto; }
+            .items-table th, .items-table td { padding: 10px; }
+            .invoice-preview { padding: 16px; margin-top: 16px; }
+            .preview-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .summary { padding: 16px; }
+            .summary-item { margin-bottom: 10px; padding-bottom: 10px; }
+            .total { font-size: 1.2rem; }
+            .notification { left: 12px; right: 12px; top: auto; bottom: 12px; }
+        }
+
+        /* ===== Tabel jadi kartu di layar sangat kecil ===== */
+        @media (max-width: 480px) {
+            .items-table thead { display: none; }
+            .items-table,
+            .items-table tbody,
+            .items-table tr,
+            .items-table td {
+                display: block;
+                width: 100%;
+            }
+            .items-table tr {
+                border: 1px solid #e5e7eb;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                background: #fff;
+            }
+            .items-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: none;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            .items-table td:last-child { border-bottom: none; }
+            .items-table td:nth-child(1)::before { content: "Deskripsi"; font-weight: 600; color: #374151; }
+            .items-table td:nth-child(2)::before { content: "Jumlah"; font-weight: 600; color: #374151; }
+            .items-table td:nth-child(3)::before { content: "Harga"; font-weight: 600; color: #374151; }
+            .items-table td:nth-child(4)::before { content: "Total"; font-weight: 600; color: #374151; }
+            .items-table td:nth-child(5)::before { content: "Aksi"; font-weight: 600; color: #374151; }
+            .btn-danger { width: auto; }
+		}
+    </style>  
 </head>
 <body>
     <div class="container">
@@ -747,6 +802,7 @@
     </script>
 </body>
 </html>
+
 
 
 
